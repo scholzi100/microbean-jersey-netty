@@ -28,6 +28,7 @@ public final class Application extends javax.ws.rs.core.Application {
     this.classes = new HashSet<>();
     classes.add(Hork.class);
     classes.add(Hoopy.class);
+    classes.add(Biedle.class);
   }
 
   @Override

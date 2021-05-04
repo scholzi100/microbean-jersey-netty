@@ -33,6 +33,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
+import org.glassfish.jersey.message.internal.CommittingOutputStream;
 import org.glassfish.jersey.server.ApplicationHandler;
 
 import org.junit.jupiter.api.AfterAll;
@@ -94,6 +95,22 @@ final class TestRequest {
                          .buildPost(Entity.entity("Hello", MediaType.TEXT_PLAIN_TYPE))::invoke);
     assertNotNull(response);
     assertEquals(204, response.getStatus());
+  }
+
+  /**
+   * This tests if content is still the same after going
+   * over {@link CommittingOutputStream#DEFAULT_BUFFER_SIZE} buffer limit.
+   */
+  @Test
+  final void testGETBiedle() {
+    final Response response =
+            assertDoesNotThrow((ThrowingSupplier<Response>)webTarget.path("/biedle")
+                          .request()
+                          .buildGet()::invoke);
+    assertNotNull(response);
+    assertEquals(200, response.getStatus());
+    final String entity = response.readEntity(String.class);
+    assertEquals(Biedle.generateBiedleContent(25), entity);
   }
 
 }
